@@ -77,7 +77,9 @@ class Jeu():
         """
         liste_creatures = []
         for i in range(self.__nb_creatures):
-            liste_creatures.append(Creature(random.choice(CREATURE_NAMES), self.randomPos()))
+            name = random.choice(CREATURE_NAMES)
+            CREATURE_NAMES.remove(name)
+            liste_creatures.append(Creature(name, self.randomPos()))
         return liste_creatures
 
     def randomPos(self) -> Case:
