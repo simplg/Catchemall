@@ -40,10 +40,10 @@ class Creature():
       Returns:
           Case: La case cible que doit viser la créature
       """
-      for case in self.case.adjacentes(jeu):
+      for case in self.position.adjacentes(jeu):
          if jeu.estOccupee(case):
             return case
-      return random.choice(self.case.adjacentes(jeu))
+      return random.choice(self.position.adjacentes(jeu))
 
 
 
