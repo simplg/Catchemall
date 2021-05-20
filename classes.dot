@@ -1,0 +1,10 @@
+digraph "classes" {
+charset="utf-8"
+rankdir=BT
+"0" [label="{Case|+ x : int\l+ y :  int\l|+ adjacentes(jeu)\l}", shape="record"];
+"1" [label="{Creature|+ nom : str\l+ position : Case\l|+ choisirCible(jeu)\l}", shape="record"];
+"2" [label="{Jeu|+ current_c_index : int\l+ current_creature : Creature\l+ listeDesCases : dict\l+ listeDesCreatures : list\l+ taille : (int, int)\l+ tour : int\l+ winner : Creature = None\l|+ deplacer(case)\l+ estOccupee(case)\l+ generateCases(num_rows, num_cols)\l+ generateCreatures()\l+ randomPos()\l}", shape="record"];
+"0" -> "2" [arrowhead="open", arrowtail="none"];
+"1" -> "2" [arrowhead="open", arrowtail="none"];
+"2" -> "0" [arrowhead="open", arrowtail="none"];
+"2" -> "1" [arrowhead="open", arrowtail="none"];}

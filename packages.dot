@@ -1,0 +1,9 @@
+digraph "packages" {
+charset="utf-8"
+rankdir=BT
+"0" [label="case", shape="box"];
+"1" [label="creature", shape="box"];
+"2" [label="jeu", shape="box"];
+"2" -> "0" [arrowhead="open", arrowtail="none"];
+"2" -> "1" [arrowhead="open", arrowtail="none"];
+}
