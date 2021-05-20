@@ -4,7 +4,7 @@ import random
 from typing import Tuple
 from case import Case
 
-CREATURE_NAMES = ["Pikachu", "Reptincel", "Carapuce", "Bulbizarre"]
+CREATURE_NAMES = ["Pikachu", "Salameche", "Carapuce", "Bulbizar"]
 
 class Jeu():
     """Un jeu de créature sur une grille
@@ -145,8 +145,9 @@ class Jeu():
         return output_game
 
 
-  
+"""
 game = Jeu(8, 8, 2)
 while game.winner == None:
     game.deplacer(game.current_creature.choisirCible(game))
 print(f"Jeu terminé avec {game.tour} tours")
+"""
