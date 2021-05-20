@@ -3,7 +3,7 @@ import sys, pygame, math
 
 # window
 size = width, height = 1080, 720
-jeu = Jeu(8, 8, 2)
+jeu = Jeu(16, 15, 2)
 x_max, y_max = jeu.taille
 wsize, hsize = int(width/x_max), int(height/y_max)
 sprites = {}
@@ -48,19 +48,32 @@ for creature in jeu.listeDesCreatures:
     spriterect.y = creature.position.y * hsize
     sprites[creature.nom] = { 'image': sprite, 'rect': spriterect}
 
-while jeu.winner == None:
+red_audio = pygame.mixer.Sound("red-vs-gold-theme.mp3")
+red_audio.play()
+is_win_playing = False
+while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: sys.exit()
-    prev_x, prev_y = jeu.current_creature.position.x, jeu.current_creature.position.y
-    creature = jeu.deplacer(jeu.current_creature.choisirCible(jeu))
-    move(screen, sprites[creature.nom]['rect'], (creature.position.x,  creature.position.y), jeu)
-    pygame.display.flip()
-    pygame.time.delay(200)
-
-for i in range(1000):
-    redraw(screen, jeu)
-    myfont = pygame.font.SysFont('Comic Sans MS', 30)
-    textsurface = myfont.render(f'{jeu.winner.nom} a gagné !', False, (255, 0, 0))
-    screen.blit(textsurface,(0,0))
-    pygame.display.flip()
-    pygame.time.delay(100)
+    if jeu.winner == None:
+        prev_x, prev_y = jeu.current_creature.position.x, jeu.current_creature.position.y
+        creature = jeu.deplacer(jeu.current_creature.choisirCible(jeu))
+        move(screen, sprites[creature.nom]['rect'], (creature.position.x,  creature.position.y), jeu)
+        pygame.display.flip()
+        pygame.time.delay(400)
+    else:
+        if not is_win_playing:
+            red_audio.stop()
+            win_audio = pygame.mixer.Sound("win.mp3")
+            win_audio.play()
+            is_win_playing = True
+        screen.fill((255, 0, 0))
+        sprites[jeu.winner.nom]['image'] = pygame.transform.smoothscale(sprites[jeu.winner.nom]['image'], (int(height/2), int(width/2)))
+        rect = sprites[jeu.winner.nom]['image'].get_rect()
+        rect.centerx = int(width/2)
+        rect.centery = int(height/2)
+        myfont = pygame.font.SysFont('Comic Sans MS', 30)
+        textsurface = myfont.render(f'{jeu.winner.nom} a gagné !', False, (255, 255, 255))
+        screen.blit(sprites[jeu.winner.nom]['image'], rect)
+        screen.blit(textsurface,(width/2,0))
+        pygame.display.flip()
+        pygame.time.delay(100)
