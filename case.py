@@ -21,12 +21,25 @@ class Case ():
             list[Case]: liste des cases adjacentes
         """
         listeCases = list(jeu.listeDesCases.values())
-        num_rows, num_cols = jeu.taille
-        champ_x = [indice for indice in range(self.x-1,self.x+2) if 0<=indice<=num_rows]
-        champ_y = [indice for indice in range(self.x-1,self.x+2) if 0<=indice<=num_cols]
-        
-        tri = lambda c_test: (c_test.x in champ_x) & (c_test.y in champ_y)
-        casesAdjacentes = [case_temp for case_temp in listeCases if tri(case_temp)]
+        x_max, y_max = jeu.taille
+        delta = range(-1, 2)
+        x, y = [], []
+        for i in delta:
+            x_cpt = self.x + i
+            if x_cpt < 0:
+                x.append(x_max + x_cpt)
+            elif x_cpt > x_max:
+                x.append(0 + (x_cpt - x_max))
+            else:
+                x.append(x_cpt)
+            y_cpt = self.y + i
+            if y_cpt < 0:
+                y.append(y_max + y_cpt)
+            elif y_cpt > y_max:
+                y.append(0 + (y_cpt - y_max))
+            else:
+                y.append(y_cpt)
+        casesAdjacentes = list(filter(lambda case: case.x in x and case.y in y, listeCases))
         if self in casesAdjacentes:
             casesAdjacentes.remove(self)
         return casesAdjacentes

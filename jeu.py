@@ -25,6 +25,7 @@ class Jeu():
         self.winner = None
         self.listeDesCases = self.generateCases(num_rows, num_cols)
         self.listeDesCreatures: list[Creature] = self.generateCreatures()
+        self.playing = self.listeDesCreatures.copy()
     
     @property
     def current_creature(self) -> Creature:
@@ -33,7 +34,7 @@ class Jeu():
         Returns:
             Creature: la créature active
         """
-        return self.listeDesCreatures[self.current_c_index]
+        return self.playing[self.current_c_index]
 
     @property
     def taille(self) -> Tuple[int, int]:
@@ -90,47 +91,52 @@ class Jeu():
         """
         return random.choice(list(self.listeDesCases.values()))
 
-    def estOccupee(self, case: Case):
+    def estOccupee(self, case: Case) -> Creature:
         """Retourne un boolean sur la présence d'une creature sur une case
 
         Args:
             case (Case): la case pour laquelle l'on veut savoir si une creature l'occupe
 
         Returns:
-            Boolean: True si une creature occupe la case, False autrement. 
+            Creature: une creature qui occupe la case, None autrement. 
         """
-        for creature in self.listeDesCreatures:
+        for creature in self.playing:
             if creature.position.x == case.x and creature.position.y == case.y:
-                return True
-        return False 
-
+                return creature
+        return None 
 
         ## Méthode pour Check l'occupation de la case          
 
-    def deplacer(self, case):
+    def deplacer(self, case) -> Creature:
         """Méthode qui déplace la créature de case. 
         Affichage du nom du vainqueur si la case était occupée
 
         Args:
             case ([Case]): la case vers laquelle doit se déplacer la créature
         """
-        if not self.estOccupee(case):
+        creature = self.estOccupee(case)
+        current_creature = self.current_creature
+        if creature is None:
             # pas de creature sur la nouvelle case
             # incrément du tour 
             self.__tour += 1
             # on deplace la creature
-            self.current_creature.position = case
-            print(f"{self.current_creature.nom} se déplace vers ({self.current_creature.position})")
+            current_creature.position = case
+            print(f"{current_creature.nom} se déplace vers ({current_creature.position})")
             # on change la creature
-            self.current_c_index = (self.current_c_index + 1)%len(self.listeDesCreatures)
         else:
             # creature presente sur la case
             # on deplace la creature
-            self.current_creature.position = case
-            print(f"{self.current_creature.nom} se déplace vers ({self.current_creature.position})")
-            # on met la creature gagnante
-            self.winner = self.current_creature
-            print("Le gagnant est :", self.winner.nom)  
+            current_creature.position = case
+            print(f"{current_creature.nom} se déplace vers ({current_creature.position})")
+            print(f"{current_creature.nom} tue ({creature.nom})")
+            self.playing.remove(creature)
+            if len(self.playing) == 1:
+                # on met la creature gagnante
+                self.winner = current_creature
+                print("Le gagnant est :", self.winner.nom)  
+        self.current_c_index = (self.playing.index(current_creature) + 1)%len(self.playing)
+        return current_creature
         
     def __str__(self):
         output_game = "Taille du plateau : " + str(self.__num_cols) + "x" + str(self.__num_rows) + "\n"
@@ -139,8 +145,8 @@ class Jeu():
         return output_game
 
 
-        
-game = Jeu()
+  
+game = Jeu(8, 8, 2)
 while game.winner == None:
     game.deplacer(game.current_creature.choisirCible(game))
 print(f"Jeu terminé avec {game.tour} tours")
