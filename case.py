@@ -23,7 +23,7 @@ class Case ():
         listeCases = list(jeu.listeDesCases.values())
         num_rows, num_cols = jeu.taille
         champ_x = [indice for indice in range(self.x-1,self.x+2) if 0<=indice<=num_rows]
-        champ_y = [indice for indice in range(self.x-1,self.x+2) if 0<=indice<=num_cols]
+        champ_y = [indice for indice in range(self.y-1,self.y+2) if 0<=indice<=num_cols]
         
         tri = lambda c_test: (c_test.x in champ_x) & (c_test.y in champ_y)
         casesAdjacentes = [case_temp for case_temp in listeCases if tri(case_temp)]
