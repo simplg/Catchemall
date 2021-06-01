@@ -1,0 +1,16 @@
+digraph "classes" {
+charset="utf-8"
+rankdir=BT
+"0" [label="{BasicTerrain|\l|generateCases()\l}", shape="record"];
+"1" [label="{Behavior|\l|choisirCible(creature, jeu)\l}", shape="record"];
+"2" [label="{Case|active\lx\ly\l|adjacentes(jeu)\l}", shape="record"];
+"3" [label="{Creature|behavior\lnom\lnom\lposition\lposition : NoneType\l|choisirCible(jeu)\l}", shape="record"];
+"4" [label="{Jeu|current_c_index : int\lcurrent_creature\llisteDesCases : dict\llisteDesCreatures\lnb_creatures\lplaying\ltaille\ltour\lwinner\l|deplacer(case)\lestOccupee(case)\lgenerateCases()\lgenerateCreatures(nb_creatures, behavior)\lrandomPos()\l}", shape="record"];
+"5" [label="{RandomBehavior|\l|choisirCible(creature, jeu)\l}", shape="record"];
+"6" [label="{Terrain|size\l|generateCases()\l}", shape="record"];
+"0" -> "6" [arrowhead="empty", arrowtail="none"];
+"5" -> "1" [arrowhead="empty", arrowtail="none"];
+"0" -> "4" [arrowhead="diamond", arrowtail="none", fontcolor="green", label="__terrain", style="solid"];
+"5" -> "3" [arrowhead="diamond", arrowtail="none", fontcolor="green", label="behavior", style="solid"];
+"5" -> "3" [arrowhead="diamond", arrowtail="none", fontcolor="green", label="behavior", style="solid"];
+}

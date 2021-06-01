@@ -1,4 +1,5 @@
 import random
+from terrain import BasicTerrain
 from typing import Tuple
 from jeu import Jeu
 import sys, pygame
@@ -95,7 +96,7 @@ class Game2D():
 pygame.init()
 pygame.font.init()
 
-game2d = Game2D(Jeu(8, 8, 2))
+game2d = Game2D(Jeu(3, BasicTerrain(8,8)))
 grey = 150, 150, 150
 
 red_audio = pygame.mixer.Sound("red-vs-gold-theme.mp3")

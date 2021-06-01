@@ -1,3 +1,8 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from jeu import Jeu
+
 class Case ():
     """ Une case du jeu video
     """
@@ -16,7 +21,7 @@ class Case ():
     def active(self):
         return self.__active
 
-    def adjacentes(self, jeu):
+    def adjacentes(self, jeu: Jeu):
         """Retourne les cases adjacentes à la case
 
         Args:

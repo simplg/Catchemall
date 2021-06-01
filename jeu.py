@@ -1,31 +1,37 @@
 from __future__ import annotations
+from behavior import Behavior, RandomBehavior
 from creature import Creature
 import random
-from typing import Tuple
+from typing import Tuple, Union
 from case import Case
+from terrain import BasicTerrain, Terrain
 
 CREATURE_NAMES = ["Pikachu", "Salameche", "Carapuce", "Bulbizar"]
 
 class Jeu():
     """Un jeu de créature sur une grille
     """
-    def __init__(self, num_rows: int = 4, num_cols: int = 4, nb_creatures: int = 2) -> None:
+    def __init__(self, nb_creatures: int = 2, terrain: Terrain = BasicTerrain(4, 4), behavior: Union[Behavior, list[Behavior]] = RandomBehavior()) -> None:
         """Construit un jeu d'une taille num_rows x num_cols avec un nombre de créatures
 
         Args:
-            num_rows (int, optional): Le nombre de lignes sur la grille du jeu. Defaults to 4.
-            num_cols (int, optional): Le nombre de colonnes sur la grille du jeu. Defaults to 4.
             nb_creatures (int, optional): Le nombre de créatures dans le jeu. Defaults to 2.
+            terrain (Terrain, optional): La map du jeu. Defaults to BasicTerrain(4, 4).
+            behavior (Behavior, optional): Le comportement de déplacement de chaque créatures.
         """
-        self.__num_cols = num_cols
-        self.__num_rows = num_rows
-        self.__nb_creatures = nb_creatures
+        self.__terrain = terrain
         self.__tour = 0
+        self.listeDesCases = self.generateCases()
+        self.listeDesCreatures: list[Creature] = self.generateCreatures(nb_creatures, behavior)
         self.current_c_index = 0
-        self.winner = None
-        self.listeDesCases = self.generateCases(num_rows, num_cols)
-        self.listeDesCreatures: list[Creature] = self.generateCreatures()
-        self.playing = self.listeDesCreatures.copy()
+    
+    @property
+    def nb_creatures(self):
+        return len(self.listeDesCreatures)
+
+    @property
+    def winner(self):
+        return self.playing[0] if len(self.playing) == 1 else None
     
     @property
     def current_creature(self) -> Creature:
@@ -43,7 +49,7 @@ class Jeu():
         Returns:
             Tuple[int, int]: Un tuple (x, y)
         """
-        return self.__num_rows, self.__num_cols
+        return self.__terrain.size
     
     @property
     def tour(self) -> int:
@@ -53,8 +59,18 @@ class Jeu():
             int: tour actif
         """
         return self.__tour
+    
+    @property
+    def listeDesCreatures(self):
+        return self.__listeDesCreatures
+    
+    @listeDesCreatures.setter
+    def listeDesCreatures(self, creatures: list[Creature]):
+        self.__listeDesCreatures = creatures
+        self.playing = self.listeDesCreatures.copy()
 
-    def generateCases(self, num_rows: int, num_cols: int) -> dict[Tuple[int, int], Case]:
+
+    def generateCases(self) -> dict[Tuple[int, int], Case]:
         """Génère un dictionnaire de cases selon une taille défini
 
         Args:
@@ -64,23 +80,28 @@ class Jeu():
         Returns:
             dict[Tuple[int, int], Case]: un dictionnaire de case avec un tuple (x, y) comme clé
         """
-        liste_cases: dict[Tuple[int, int], Case] = {}
-        for i in range(num_rows):
-            for j in range(num_cols):
-                liste_cases[(i, j)] = Case(i, j)
-        return liste_cases
+        return self.__terrain.generateCases()
     
-    def generateCreatures(self) -> list[Creature]:
+    def generateCreatures(self, nb_creatures: int = 2, behavior: Union[Behavior, list[Behavior]] = RandomBehavior()) -> list[Creature]:
         """Génère une liste de créatures selon le nombre défini dans la classe
+        
+        Args:
+            nb_creatures (int, optional): Le nombre de créatures dans le jeu. Defaults to 2.
+            behavior (Behavior, optional): Le comportement de déplacement de chaque créatures.
 
         Returns:
             list[Creature]: une liste de créature
         """
         liste_creatures = []
-        for i in range(self.__nb_creatures):
+        for i in range(nb_creatures):
             name = random.choice(CREATURE_NAMES)
             CREATURE_NAMES.remove(name)
-            liste_creatures.append(Creature(name, self.randomPos()))
+            creature = Creature(name, self.randomPos())
+            b = behavior
+            if isinstance(b, list):
+                b = b[i%len(b)]
+            creature.behavior = b
+            liste_creatures.append(creature)
         return liste_creatures
 
     def randomPos(self) -> Case:
@@ -133,7 +154,6 @@ class Jeu():
             self.playing.remove(creature)
             if len(self.playing) == 1:
                 # on met la creature gagnante
-                self.winner = current_creature
                 print("Le gagnant est :", self.winner.nom)  
         self.current_c_index = (self.playing.index(current_creature) + 1)%len(self.playing)
         return current_creature

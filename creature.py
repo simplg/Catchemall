@@ -1,9 +1,16 @@
+from __future__ import annotations
+from behavior import Behavior, RandomBehavior
 import random
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+   from jeu import Jeu
+   from case import Case
+
 
 class Creature():
    """Une créature du jeu
    """
-   def __init__(self, nom, position = None):
+   def __init__(self, nom, position: Case = None, behavior: Behavior = RandomBehavior()):
       """Construit une créature du jeu avec un nom donné et une position
 
       Args:
@@ -12,6 +19,7 @@ class Creature():
       """
       self.nom = nom
       self.position = position
+      self.behavior = behavior
 
    def _get_nom(self):
       return self._nom
@@ -30,7 +38,7 @@ class Creature():
    def __str__(self):
       return str(self.nom,self.position)   
 
-   def choisirCible(self, jeu):
+   def choisirCible(self, jeu: Jeu):
       """Retourne une case parmis les cases adjacentes de la créature. Si une case adjacente est 
       occupée, elle la retourne. Sinon elle retourne aléatoirement parmis celles aléatoires.
 
@@ -40,11 +48,7 @@ class Creature():
       Returns:
           Case: La case cible que doit viser la créature
       """
-      for case in self.position.adjacentes(jeu):
-         if jeu.estOccupee(case):
-            return case
-      return random.choice(self.position.adjacentes(jeu))
-
+      return self.behavior.choisirCible(self, jeu)
 
 
         
